@@ -1,4 +1,4 @@
-## Project Title: GasGuard: Automated Optimization Suite
+## GasGuard: Automated Optimization Suite
 
 ### 1. Executive Summary
 
