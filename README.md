@@ -71,3 +71,54 @@ npm run start
 ```
 
 The API will be available at `http://localhost:3000`.
+=======
+## 🔌 API Versioning
+
+The GasGuard API uses **NestJS built-in versioning** with URI-based versioning strategy. All endpoints require a version prefix.
+
+### Versioning Strategy
+
+- **Type:** URI-based versioning
+- **Current Version:** `v1`
+- **Format:** All endpoints must include `/v1/` prefix
+- **Unversioned Requests:** Return `404 Not Found`
+
+### Example Endpoints
+
+```bash
+# ✅ Correct - Versioned endpoint
+GET /v1/example
+
+# ❌ Incorrect - Unversioned (returns 404)
+GET /example
+```
+
+### Adding New Controllers
+
+When creating new controllers, always include the `@Version('1')` decorator:
+
+```typescript
+import { Controller, Get, Version } from '@nestjs/common';
+
+@Controller('users')
+@Version('1')
+export class UsersController {
+  @Get()
+  findAll() {
+    // Accessible at GET /v1/users
+  }
+}
+```
+
+### Configuration
+
+Versioning is configured in `apps/api/src/main.ts`:
+
+```typescript
+app.enableVersioning({
+  type: VersioningType.URI,
+  // No defaultVersion - unversioned requests return 404
+});
+```
+
+This ensures all API consumers explicitly specify the version, making the API future-proof for version migrations.
