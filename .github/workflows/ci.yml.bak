@@ -73,15 +73,6 @@ jobs:
             echo "lockfile=pnpm-lock.yaml" >> $GITHUB_OUTPUT
           elif [ -f "yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
-
-      - name: Detect package manager
-        id: package-manager
-        run: |
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "manager=pnpm" >> $GITHUB_OUTPUT
-            echo "lockfile=pnpm-lock.yaml" >> $GITHUB_OUTPUT
-          elif [ -f "yarn.lock" ]; then
-            echo "manager=yarn" >> $GITHUB_OUTPUT
             echo "lockfile=yarn.lock" >> $GITHUB_OUTPUT
           elif [ -f "package-lock.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
@@ -90,6 +81,12 @@ jobs:
             echo "manager=npm" >> $GITHUB_OUTPUT
             echo "lockfile=" >> $GITHUB_OUTPUT
           fi
+
+      - name: Install pnpm
+        if: steps.package-manager.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.10.0
 
       - name: Check for package.json files
         id: check-package
@@ -108,7 +105,7 @@ jobs:
           case "${{ steps.package-manager.outputs.manager }}" in
             pnpm)
               if [ -f "pnpm-lock.yaml" ]; then
-                /usr/local/bin/pnpm install --frozen-lockfile
+                pnpm install --frozen-lockfile
               else
                 echo "No pnpm-lock.yaml found. Skipping dependency installation."
               fi
