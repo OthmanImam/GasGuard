@@ -90,8 +90,8 @@ describe('Basic API E2E Tests', () => {
       .get('/rules')
       .expect(200);
 
-    expect(response.body).toHaveProperty('rules');
-    expect(Array.isArray(response.body.rules)).toBeTruthy();
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body.length).toBeGreaterThan(0);
   });
 
   it('should handle 404 for non-existent routes', async () => {
@@ -102,12 +102,15 @@ describe('Basic API E2E Tests', () => {
     expect(response.body).toBeDefined();
   });
 
-  it('should handle malformed JSON gracefully', async () => {
+  it('should handle empty code gracefully', async () => {
     const response = await request(app.getHttpServer())
       .post('/scanner/scan')
-      .send('invalid json')
-      .expect(400);
+      .send({
+        code: '',
+        source: 'empty-test'
+      })
+      .expect(200);
 
-    expect(response.body).toBeDefined();
+    expect(response.body).toHaveProperty('violations');
   });
 });

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
+import { E2ETestModule } from './e2e-test.module';
 import { ethers } from 'ethers';
 import { spawn } from 'child_process';
 import { promisify } from 'util';
@@ -34,7 +34,7 @@ describe('Gasless Transaction E2E Tests', () => {
 
     // Create NestJS app
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [E2ETestModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
